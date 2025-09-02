@@ -1,0 +1,61 @@
+import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    from tensorflow.keras.models import Sequential
+    from tensorflow.keras.layers import Dense,Flatten
+    from tensorflow.keras.datasets import mnist
+    from tensorflow.keras.utils import to_categorical
+    from tensorflow.keras.optimizers import Adam
+    from sklearn.metrics import classification_report,confusion_matrix
+
+    (X_train,y_train),(X_test,y_test) = mnist.load_data()
+    X_train,X_test = X_train/255.0,X_test/255.0
+    y_train,y_test = to_categorical(y_train,10),to_categorical(y_test,10)
+
+    def build_mlp(activation,layer_config):
+        model = Sequential()
+        model.add(Flatten(input_shape=(28,28)))
+        for units in layer_config:
+            model.add(Dense(units,activation))
+        model.add(Dense(10,activation='softmax'))
+
+        model.compile(Adam(0.0001),loss='categorical_crossentropy',metrics=['accuracy'])
+        return model
+
+    activations = ['relu','tanh','sigmoid']
+    layer_configs = [[128,64],[256,128,64],[512,256,128,64]]
+    results = {}
+
+    for activatioin activations:
+        for config in layer_configs:
+            model = build_mlp(activation,config)
+            history = model.fit(X_train,y_train,epochs=10,validation_split=0.2,verbose=0,batch_size=32)
+            _,accuracy=model.evaluate(X_test,y_test)
+            results[(activation,str(config))] = accuracy
+            print(activation,config,accuracy)
+
+    plt.figure(figsize=(12,8))
+    for key,value in results.items():
+        plt.bar(str(key),value)
+    plt.xticks(rotation=90)
+    plt.show()
+
+    best_activation,best_config = max(results,key=results.get)
+
+    best_model = build_mlp(best_activation,eval(best_config))
+    best_model.fit(X_train,y_train,epochs=10,batch_size=32,validation_split=0.2,verbose=0)
+
+    y_pred = best_model.predict(X_test).argmax(1)
+    y_test_label = y_test.argmax(1)
+
+    print(best_activation,best_config)
+    print(confusion_matrix(y_test_label,y_pred))
+    print(classification_report(y_test_label,y_pred))
+
+    plt.figure(figsize=(15,15))
+    for i in range(25):
+        plt.subplot(5,5,i+1)
+        plt.imshow(X_test[i],cmap='gray')
+        plt.title(f"Pred:{y_pred[i]},Actual{y_test_label[i]}")
+        plt.axis('off')
+    plt.show()
