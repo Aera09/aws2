@@ -26,7 +26,7 @@ import numpy as np
     layer_configs = [[128,64],[256,128,64],[512,256,128,64]]
     results = {}
 
-    for activatio in activations:
+    for activation in activations:
         for config in layer_configs:
             model = build_mlp(activation,config)
             history = model.fit(X_train,y_train,epochs=10,validation_split=0.2,verbose=0,batch_size=32)
@@ -60,3 +60,4 @@ import numpy as np
         plt.axis('off')
 
     plt.show()
+
