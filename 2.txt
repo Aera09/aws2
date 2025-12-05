@@ -34,3 +34,44 @@ for w in words:
         longest = w
 
 print("\nLongest word:", longest)
+
+# Program to count occurrence of each character.
+s = "banana"
+freq = {}
+for ch in s:
+    freq[ch] = freq.get(ch, 0) + 1
+print(freq)
+
+# Program to remove all vowels from a string.
+s = "Data Science"
+result = ""
+for ch in s:
+    if ch.lower() not in "aeiou":
+        result += ch
+print(result)
+
+# String Operations
+s = " Hello World "
+print("Upper:", s.upper())
+print("Lower:", s.lower())
+print("Strip:", s.strip())
+print("Find 'o':", s.find('o'))
+print("Replace:", s.replace("World", "Python"))
+print("Split:", s.split())
+print("Title:", s.title())
+
+isalpha()	letters only
+isdigit()	numbers only
+isalnum()	letters + numbers
+isspace()	whitespace only
+islower()	all lowercase
+isupper()	all uppercase
+istitle()	title format?
+
+split()	"a,b,c".split(',') → ['a','b','c']
+join()	" ".join(['hello','world'])
+
+len()	length of string
+sorted()	returns sorted characters
+format()	"Hello {}".format("Faria")
+
